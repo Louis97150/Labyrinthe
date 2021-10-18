@@ -1,4 +1,5 @@
-import turtle as tr
+import turtle as tr 
+#jai importer turtle
 
 tableXY=[]
 N=[]
