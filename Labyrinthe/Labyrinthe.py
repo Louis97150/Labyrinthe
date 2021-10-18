@@ -108,6 +108,18 @@ def mursV(x,y):
                 V+=1
     return V,E,O
 
+#print(mursV(8,4))
+
+def mursV(x,y):
+    murs(x,y)
+    murV=[]
+    for i in O:
+        murV.append(i)
+    for j in E:
+        if (j in O) == False:
+            murV.append(j)
+    return murV
+
 print(mursV(8,4))
 
 #Test les fonction
