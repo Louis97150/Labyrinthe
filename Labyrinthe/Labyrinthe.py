@@ -1,5 +1,4 @@
 import turtle as tr 
-#jai importer turtle
 
 tableXY=[]
 N=[]
@@ -48,15 +47,17 @@ def nombre(x,y):
             tableXY.append([j,i])
     return tableXY
 
+
 #Valeurs de N,E,S,O
 def murs(x,y):
     nombre(x,y)
     global N,S,E,O
     for i in range(len(tableXY)):
             N.append(tableXY[i][0]+tableXY[i][1]*x)
-            E.append(1+tableXY[i][0]+tableXY[i][1]*x)
+            E.append(1+tableXY[i][0]+tableXY[i][1]*(x+1))
             S.append(tableXY[i][0]+(tableXY[i][1]+1)*x)
             O.append(tableXY[i][0]+tableXY[i][1]*(x+1))
+    return N,E,S,O
 
 #Donne valeur de x puis de y
 def XY(x,y):
@@ -89,17 +90,25 @@ def voisin(x,y,nX,nY):
 def mursH(x,y):
     murs(x,y)
     murH=[]
-    print(N)
-    print(S)
     for i in range(len(N)):
         murH.append(N[i])
-    print(murH)
-    for i in range(len(N)):
-        if N[i] in S:
-            S.pop(N[i])
+    for i in range(len(N)-x, len(S)):
+        murH.append(S[i])
     return murH
 
-print(mursH(8,4))
+def mursV(x,y):
+    murs(x,y)
+    murV=[]
+    V=1
+    for i in range(len(O)):
+        murV.append(O[i])
+    for k in range(len(E)):
+        for j in range(len(O)):
+            if O[j]==E[k]:
+                V+=1
+    return V,E,O
+
+print(mursV(8,4))
 
 #Test les fonction
 def test():
