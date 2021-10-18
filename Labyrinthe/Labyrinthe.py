@@ -9,6 +9,7 @@ O=[]
 X=[]
 Y=[]
 
+
 #Sort une liste alant de 0 a n-1
 def iota(n):
     liste = []
@@ -99,25 +100,18 @@ def mursH(x,y):
 def mursV(x,y):
     murs(x,y)
     murV=[]
-    V=1
-    for i in range(len(O)):
-        murV.append(O[i])
-    for k in range(len(E)):
-        for j in range(len(O)):
-            if O[j]==E[k]:
-                V+=1
-    return V,E,O
-
-#print(mursV(8,4))
-
-def mursV(x,y):
-    murs(x,y)
-    murV=[]
     for i in O:
         murV.append(i)
     for j in E:
         if (j in O) == False:
             murV.append(j)
+    for i in range(1, len(murV)): 
+        k = murV[i] 
+        j = i-1
+        while j >= 0 and k < murV[j] : 
+                murV[j + 1] = murV[j] 
+                j -= 1
+        murV[j + 1] = k
     return murV
 
 print(mursV(8,4))
