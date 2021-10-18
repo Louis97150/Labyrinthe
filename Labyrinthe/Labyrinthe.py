@@ -1,5 +1,3 @@
-import turtle as tr 
-
 tableXY=[]
 N=[]
 E=[]
@@ -8,7 +6,6 @@ O=[]
 
 X=[]
 Y=[]
-
 
 #Sort une liste alant de 0 a n-1
 def iota(n):
@@ -116,64 +113,10 @@ def mursV(x,y):
 
 print(mursV(8,4))
 
-#Test les fonction
+#Test les fonctions
 def test():
     assert iota(4)== [0,1,2,3]
     assert contient([1,2,3],3) == True
     assert contient([1,2,3,4],5) == False
     assert ajouter([1,2,3],4) == [1,2,3,4]
     assert retirer([1,2,3,4],4) == [1,2,3]
-
-#Dessine un rectangle
-def rectangle(x,y,z):
-    for _ in range(2):
-        tr.fd((x-1)*z)
-        tr.penup()
-        tr.fd(z)
-        tr.pendown()
-        tr.lt(90)
-        tr.fd(y*z)
-        tr.lt(90)
-
-#Dessine les colonnes
-def largeur(x,y,z):
-    for _ in range(x-1):
-        tr.penup()
-        tr.fd(z)
-        tr.left(90)
-        tr.pendown()
-        tr.forward(y*z)
-        tr.penup()
-        tr.left(180)
-        tr.fd(y*z)
-        tr.pendown()
-        tr.left(90)
-
-def hauteur(x,y,z):
-    tr.penup()
-    tr.goto(0,0)
-    tr.left(90)
-    for _ in range(y-1):
-        tr.fd(z)
-        tr.right(90)
-        tr.pendown()
-        tr.fd(x*z)
-        tr.penup()
-        tr.right(180)
-        tr.fd(x*z)
-        tr.right(90)
-
-    
-#Dessine la grille       
-def grille(nX,nY,largeurCase):
-    rectangle(nX,nY,largeurCase)
-    largeur(nX,nY,largeurCase)
-    hauteur(nX,nY,largeurCase)
-
-def blanc(x,y,z):
-    grille(x,y,z)
-    tr.pendown()
-    tr.color("white")
-    tr.fd(z)
-
-# tr.mainloop()
