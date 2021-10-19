@@ -13,21 +13,21 @@ murV=[]
 cavite=[]
 front=[]
 
-#Sort une liste alant de 0 a n-1
+#Crée une liste de nombre de 0 à n-1
 def iota(n):
     liste = []
     for i in range(n):
         liste.append(i)
     return liste
 
-#Verifier si valeur dans liste
+#Verifie si la valeur x appartient à la table
 def contient(tab,x):
     for i in range(len(tab)):
         if tab[i]==x:
             return True
     return False
 
-#Ajoute une valeur dans fin tab si exsite pas
+#Ajoute la valeur x à la fin de la table si la table ne la contiens pas
 def ajouter(tab,x):
     if contient(tab,x):
         return tab
@@ -35,7 +35,7 @@ def ajouter(tab,x):
         tab.append(x)
         return tab
 
-#Retire x si il est dans le tableau
+#Retire la valeur x de la table si la table la contiens
 def retirer(tab,x):
     if contient(tab,x):
         tab.remove(x)
@@ -43,16 +43,16 @@ def retirer(tab,x):
     else:
         return tab
 
-#Donne toutes les coordonnees x,y
+#Crée la liste des coordonnées (x,y) des cases du labyrinthe
 def nombre(x,y):
     global tableXY
     for i in range(y):
         for j in range(x):
             tableXY.append([j,i])
     return tableXY
-  
+
  
-#Valeurs de N,E,S,O
+#Crée la liste des numéros des murs Nord, Est, Sud et Ouest de chaque cellule
 def murs(x,y):
     nombre(x,y)
     global N,S,E,O
@@ -62,17 +62,18 @@ def murs(x,y):
             S.append(tableXY[i][0]+(tableXY[i][1]+1)*x)
             O.append(tableXY[i][0]+tableXY[i][1]*(x+1))
     return N,E,S,O
+print(murs(8,4))
 
-#Donne valeur de x puis de y
+#Sépare les coordonnées x et y en deux listes respectives
 def XY(x,y):
     murs(x,y)
     for i in range(x):
         X.append(tableXY[i][0])
-    for i in range(0,len(N),8):
+    for i in range(0,len(N),x):
         Y.append(tableXY[i][1])
     return X,Y
 
-#Verifie les voisins
+#Donne la liste des numéros de cellules voisines à (x,y)
 def voisin(x,y,nX,nY):
     nombre(nX,nY)
     voisins=[]
@@ -99,6 +100,7 @@ def mursH():
             murH.append(j)
     return murH
 
+
 def mursV():
     global murV
     for i in O:
@@ -118,6 +120,7 @@ def mursV():
 def trace(nX,nY,largeurCase):
     setScreenMode(nX*largeurCase+(nX+1),nY*largeurCase+(nY+1))
   
+
 def rectangle(nX,nY,largeurCase):  
     color(nX,nY,largeurCase)
     coteV(nX,nY,largeurCase)
@@ -197,3 +200,23 @@ def test():
     assert contient([1,2,3,4],5) == False
     assert ajouter([1,2,3],4) == [1,2,3,4]
     assert retirer([1,2,3,4],4) == [1,2,3]
+
+#Listes des murH et murV que l'on peut enlever :
+def mursH():
+    global murH
+    for i in N:
+        if (i in S) == True:
+            murH.append(i)
+    return murH
+
+def mursV():
+    global murV
+    for i in O:
+        if (i in E) == True :
+            murV.append(i)
+    return murV
+   
+#Donc murH + murV sont les murs que l'on peut enlever. Idées :
+# - on sélectionne une cellule au hasard puis un mur de cette cellule au hasard
+# - on vérifie si le mur choisit fait parti de murH ou murV, si oui, on peut l'enlever
+# - pour enlever le mur (colorier en blanc), partir du premier pixel du mur et aller jusque longueurCase 
