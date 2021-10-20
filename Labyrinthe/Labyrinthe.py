@@ -4,8 +4,8 @@ E=[]
 S=[]
 O=[]
 
-X=[]
-Y=[]
+X=None
+Y=None
 
 murH=[]
 murV=[]
@@ -19,6 +19,14 @@ def iota(n):
     for i in range(n):
         liste.append(i)
     return liste
+
+def coordonnees(nX,nY,largeurCase):
+    global X,Y
+    X=iota(nX*largeurCase+(nX+1))
+    Y=iota(nY*largeurCase+(nY+1))
+    return X,Y
+
+print(coordonnees(3,3,3))
 
 #Verifier si valeur dans liste
 def contient(tab,x):
@@ -53,8 +61,9 @@ def nombre(x,y):
   
  
 #Valeurs de N,E,S,O
-def murs(x,y):
+def murs(x,y): 
     nombre(x,y)
+    print(tableXY)
     global N,S,E,O
     for i in range(len(tableXY)):
             N.append(tableXY[i][0]+tableXY[i][1]*x)
@@ -177,7 +186,7 @@ def cave(x,y):
             retirer(tableXY, cavite[i])
         if X!= tableXY[x-1][0] and X!= tableXY[x-1][1]:
             v=front[(math.floor(random()*(len(front)-1)))][(math.floor(random()*(len(front)-1)))] 
-            cavite.append(tableXY[v])
+            cavite.append(tableXY[v]) 
         
     return cavite,N
 
@@ -185,15 +194,3 @@ def sup(nX,nY,largeurCase):
     cave(nX,nY)
     for i in range(len(cavite)):
         setPixel(cavite[i][0],cavite[i][1],struct(r=15,g=15,b=15))
-    
-    
-def laby(nX,nY,largeurCase):
-    rectangle(nX,nY,largeurCase)
-    
-#Test les fonctions
-def test(): 
-    assert iota(4)== [0,1,2,3]
-    assert contient([1,2,3],3) == True
-    assert contient([1,2,3,4],5) == False
-    assert ajouter([1,2,3],4) == [1,2,3,4]
-    assert retirer([1,2,3,4],4) == [1,2,3]
