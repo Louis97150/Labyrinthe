@@ -197,3 +197,15 @@ def sup(nX,nY,largeurCase):
     cave(nX,nY)
     for i in range(len(cavite)):
         setPixel(cavite[i][0],cavite[i][1],struct(r=15,g=15,b=15))
+
+
+def laby(nX,nY,largeurCase):
+    rectangle(nX,nY,largeurCase)
+    
+#Test les fonctions
+def test(): 
+    assert iota(4)== [0,1,2,3]
+    assert contient([1,2,3],3) == True
+    assert contient([1,2,3,4],5) == False
+    assert ajouter([1,2,3],4) == [1,2,3,4]
+    assert retirer([1,2,3,4],4) == [1,2,3]
