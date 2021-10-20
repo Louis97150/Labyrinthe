@@ -13,7 +13,7 @@ murV=[]
 cavite=[]
 front=[]
 
-#Sort une liste alant de 0 a n-1
+#Crée une liste de nombre de 0 à n-1
 def iota(n):
     liste = []
     for i in range(n):
@@ -35,7 +35,7 @@ def contient(tab,x):
             return True
     return False
 
-#Ajoute une valeur dans fin tab si exsite pas
+#Ajoute la valeur x à la fin de la table si la table ne la contiens pas
 def ajouter(tab,x):
     if contient(tab,x):
         return tab
@@ -43,7 +43,7 @@ def ajouter(tab,x):
         tab.append(x)
         return tab
 
-#Retire x si il est dans le tableau
+#Retire la valeur x de la table si la table la contiens
 def retirer(tab,x):
     if contient(tab,x):
         tab.remove(x)
@@ -51,14 +51,14 @@ def retirer(tab,x):
     else:
         return tab
 
-#Donne toutes les coordonnees x,y
+#Crée la liste des coordonnées (x,y) des cases du labyrinthe
 def nombre(x,y):
     global tableXY
     for i in range(y):
         for j in range(x):
             tableXY.append([j,i])
     return tableXY
-  
+
  
 #Valeurs de N,E,S,O
 def murs(x,y): 
@@ -71,17 +71,18 @@ def murs(x,y):
             S.append(tableXY[i][0]+(tableXY[i][1]+1)*x)
             O.append(tableXY[i][0]+tableXY[i][1]*(x+1))
     return N,E,S,O
+print(murs(8,4))
 
-#Donne valeur de x puis de y
+#Sépare les coordonnées x et y en deux listes respectives
 def XY(x,y):
     murs(x,y)
     for i in range(x):
         X.append(tableXY[i][0])
-    for i in range(0,len(N),8):
+    for i in range(0,len(N),x):
         Y.append(tableXY[i][1])
     return X,Y
 
-#Verifie les voisins
+#Donne la liste des numéros de cellules voisines à (x,y)
 def voisin(x,y,nX,nY):
     nombre(nX,nY)
     voisins=[]
@@ -108,6 +109,7 @@ def mursH():
             murH.append(j)
     return murH
 
+
 def mursV():
     global murV
     for i in O:
@@ -127,6 +129,7 @@ def mursV():
 def trace(nX,nY,largeurCase):
     setScreenMode(nX*largeurCase+(nX+1),nY*largeurCase+(nY+1))
   
+
 def rectangle(nX,nY,largeurCase):  
     color(nX,nY,largeurCase)
     coteV(nX,nY,largeurCase)
