@@ -60,7 +60,7 @@ def nombre(x,y):
     return tableXY
 
  
-#Valeurs de N,E,S,O
+#Valeurs des murs Nord, Est, Sud et Ouest
 def murs(x,y): 
     nombre(x,y)
     print(tableXY)
@@ -71,16 +71,19 @@ def murs(x,y):
             S.append(tableXY[i][0]+(tableXY[i][1]+1)*x)
             O.append(tableXY[i][0]+tableXY[i][1]*(x+1))
     return N,E,S,O
-print(murs(8,4))
+#print(murs(3,3))
 
-#Sépare les coordonnées x et y en deux listes respectives
+#Sépare les coordonnées x et y des cases du labytinthe en deux listes respectives
 def XY(x,y):
     murs(x,y)
+    caseX=[]
+    caseY=[]
     for i in range(x):
-        X.append(tableXY[i][0])
+        caseX.append(tableXY[i][0])
     for i in range(0,len(N),x):
-        Y.append(tableXY[i][1])
-    return X,Y
+        caseY.append(tableXY[i][1])
+    return caseX,caseY
+print(XY(3,3))
 
 #Donne la liste des numéros de cellules voisines à (x,y)
 def voisin(x,y,nX,nY):
@@ -99,6 +102,7 @@ def voisin(x,y,nX,nY):
         v1 = (x+1)+y*nX
         voisins.append(v1) 
     return voisins
+#print(voisin(1,1,3,3))
 
 def mursH():
     global murH
@@ -192,6 +196,36 @@ def cave(x,y):
             cavite.append(tableXY[v]) 
         
     return cavite,N
+
+def coordonneMurV(nX,nY,largeurCase):
+    coordonnees(nX,nY,largeurCase)
+    coordonneMurV=[]
+    for y in range(1,len(Y)-1,largeurCase+1):
+        for x in range(largeurCase+1,len(X)-1,largeurCase+1):
+            coordonneMurV.append([x,y])
+    return coordonneMurV
+            
+def coordonneMurH(nX,nY,largeurCase):
+    coordonnees(nX,nY,largeurCase)
+    coordonneMurH=[]
+    for y in range(largeurCase+1,len(Y)-1,largeurCase+1):
+        for x in range(1,len(X)-1,largeurCase+1):
+            coordonneMurH.append([x,y])
+    return coordonneMurH
+
+def creerPassageH(nX,nY,largeurCase):
+    mur = math.floor(random()*(len(coordonneMurH(nX,nY,largeurCase))))
+    murEnlever = coordonneMurH(nX,nY,largeurCase)[mur]
+    for x in range (murEnlever[0],murEnlever[0]+largeurCase):
+        setPixel(x,murEnlever[1],struct(r=15,g=15,b=15))
+    return murEnlever
+
+def creerPassageV(nX,nY,largeurCase):
+    mur = math.floor(random()*(len(coordonneMurV(nX,nY,largeurCase))))
+    murEnlever = coordonneMurV(nX,nY,largeurCase)[mur]
+    for y in range (murEnlever[1],murEnlever[1]+largeurCase):
+        setPixel(murEnlever[0],y,struct(r=15,g=15,b=15))
+    return murEnlever
 
 def sup(nX,nY,largeurCase):
     cave(nX,nY)
