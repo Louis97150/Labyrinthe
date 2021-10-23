@@ -1,3 +1,8 @@
+#Auteurs : Louis Duong et Romy Mahieu
+#Date de création : 24 octobre 2021
+
+#Ce programme crée un labyrinthe rectangulaire aléatoire qui posséde une solution unique
+
 tableXY=[]
 N=[]
 E=[]
@@ -13,29 +18,29 @@ murV=[]
 cavite=[]
 front=[]
 
-#Crée une liste de nombre de 0 à n-1
+#Fonction qui crée une liste de nombre de 0 à n-1
 def iota(n):
     liste = []
     for i in range(n):
         liste.append(i)
     return liste
 
-def coordonnees(nX,nY,largeurCase):
+def coordonneesPixels(nX,nY,largeurCase):
     global X,Y
     X=iota(nX*largeurCase+(nX+1))
     Y=iota(nY*largeurCase+(nY+1))
     return X,Y
 
-print(coordonnees(3,3,3))
+#print(coordonnees(3,3,3))
 
-#Verifier si valeur dans liste
+#Fonction qui vérifie si une valeur x est dans la table
 def contient(tab,x):
     for i in range(len(tab)):
         if tab[i]==x:
             return True
     return False
 
-#Ajoute la valeur x à la fin de la table si la table ne la contiens pas
+#Fonction qui vérifie si une valeur x est dans la table, et si elle n'y est pas, l'ajoute à la fin
 def ajouter(tab,x):
     if contient(tab,x):
         return tab
@@ -43,7 +48,7 @@ def ajouter(tab,x):
         tab.append(x)
         return tab
 
-#Retire la valeur x de la table si la table la contiens
+#Fonction qui vérifie si une valeur x est dans la table, et la retire si elle s'y trouve
 def retirer(tab,x):
     if contient(tab,x):
         tab.remove(x)
@@ -51,7 +56,8 @@ def retirer(tab,x):
     else:
         return tab
 
-#Crée la liste des coordonnées (x,y) des cases du labyrinthe
+#Fonction qui crée la liste des coordonnées (x,y) des cases de la grille
+#qui va servir à créer le labyrinthe
 def nombre(x,y):
     global tableXY
     for i in range(y):
@@ -63,7 +69,7 @@ def nombre(x,y):
 #Valeurs des murs Nord, Est, Sud et Ouest
 def murs(x,y): 
     nombre(x,y)
-    print(tableXY)
+    #print(tableXY)
     global N,S,E,O
     for i in range(len(tableXY)):
             N.append(tableXY[i][0]+tableXY[i][1]*x)
@@ -74,7 +80,7 @@ def murs(x,y):
 #print(murs(3,3))
 
 #Sépare les coordonnées x et y des cases du labytinthe en deux listes respectives
-def XY(x,y):
+def coordonnéesCases(x,y):
     murs(x,y)
     caseX=[]
     caseY=[]
@@ -83,7 +89,7 @@ def XY(x,y):
     for i in range(0,len(N),x):
         caseY.append(tableXY[i][1])
     return caseX,caseY
-print(XY(3,3))
+print(coordonnéesCases(3,3))
 
 #Donne la liste des numéros de cellules voisines à (x,y)
 def voisin(x,y,nX,nY):
@@ -133,7 +139,8 @@ def mursV():
 def trace(nX,nY,largeurCase):
     setScreenMode(nX*largeurCase+(nX+1),nY*largeurCase+(nY+1))
   
-
+#Fonction qui dessine la grille de pixel rectangulaire initialement pleine
+#afin de générer le labyrinthe
 def rectangle(nX,nY,largeurCase):  
     color(nX,nY,largeurCase)
     coteV(nX,nY,largeurCase)
