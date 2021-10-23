@@ -1,0 +1,171 @@
+import math
+import random
+
+nX = 3
+nY = 3
+
+N=[]; E=[]; S=[]; O=[]
+
+murH=[]; murV=[]
+
+celChoisi = []
+tableXY = []
+
+
+def contient(tab,x):
+    for i in range(len(tab)):
+        if tab[i]==x:
+            return True
+    return False
+
+def ajouter(tab,x):
+    if contient(tab,x):
+        return tab
+    else:
+        tab.append(x)
+        return tab
+
+def retirer(tab,x):
+    if contient(tab,x):
+        tab.remove(x)
+        return tab
+    else:
+        return tab
+
+def nombre(x,y):
+    global tableXY
+    for i in range(y):
+        for j in range(x):
+            tableXY.append([j,i])
+    return tableXY
+
+def murs(x,y): 
+    nombre(x,y)
+    #print(tableXY)
+    global N,S,E,O
+    for i in range(len(tableXY)):
+            N.append(tableXY[i][0]+tableXY[i][1]*x)
+            E.append(1+tableXY[i][0]+tableXY[i][1]*(x+1))
+            S.append(tableXY[i][0]+(tableXY[i][1]+1)*x)
+            O.append(tableXY[i][0]+tableXY[i][1]*(x+1))
+    return N,E,S,O
+
+def mursH():
+    global murH
+    for i in N:
+        if (i in S) == True:
+            murH.append(i)
+    return murH
+
+def mursV():
+    global murV
+    for i in O:
+        if (i in E) == True :
+            murV.append(i)
+    return murV
+
+def voisin(x,y,nX,nY):
+    nombre(nX,nY)
+    voisins=[]
+    if [x,y-1] in tableXY:
+        v4 = x+(y-1)*nX
+        voisins.append(v4) 
+    if [x-1,y] in tableXY:
+        v2= (x-1)+y*nX
+        voisins.append(v2)
+    if [x,y+1] in tableXY:
+        v3 = x+(y+1)*nX
+        voisins.append(v3)
+    if [x+1,y] in tableXY:
+        v1 = (x+1)+y*nX
+        voisins.append(v1) 
+    return voisins
+
+def position(table,valeur):
+    for position in range(len(table)) :
+        if table[position] == valeur :
+            return position
+
+def choixMur(x,y,nX,nY) :
+    nord = x+(y-1)*nX; sud = x+(y+1)*nX
+    ouest = (x-1)+y*nX; est = (x+1)+y*nX
+    voisin(x,y,nX,nY)                                                        #trouve les voisins
+    choix = tableXY[voisin[math.floor(random()*len(choixMur))]]              #choisi le voisin et donne son numéro de cellule
+    if choix[0] == x and choix[1] == y+1:                                    #on cherche le mur entre la cellule et sa voisine
+        murChoisi = nord
+        typeMur = 'nord'
+        numMur = position(mursH,murChoisi)
+    if choix[0] == x and choix[1] == y-1 :
+        murChoisi = sud
+        typeMur = 'sud'
+        numMur = position(mursH,murChoisi)
+    if choix[0] == x+1 and choix[1] == y: 
+        murChoisi = ouest
+        typeMur = 'ouest'
+        numMur = position(mursV,murChoisi)
+    if choix[0] == x-1 and choix[1] == y:
+        murChoisi = est
+        typeMur = 'est'
+        numMur = position(mursV,murChoisi)
+    return typeMur, numMur
+
+
+def iota(n):
+    liste = []
+    for i in range(n):
+        liste.append(i)
+    return liste
+
+def coordonneesPixels(nX,nY,largeurCase):
+    global X,Y
+    X=iota(nX*largeurCase+(nX+1))
+    Y=iota(nY*largeurCase+(nY+1))
+    return X,Y
+
+def coordonneMurV(nX,nY,largeurCase):
+    coordonneesPixels(nX,nY,largeurCase)
+    coordonneeMurV=[]
+    for y in range(1,len(nY)-1,largeurCase+1):
+        for x in range(largeurCase+1,len(nX)-1,largeurCase+1):
+            coordonneeMurV.append([x,y])
+    return coordonneeMurV
+            
+def coordonneMurH(nX,nY,largeurCase):
+    coordonneesPixels(nX,nY,largeurCase)
+    coordonneeMurH=[]
+    for y in range(largeurCase+1,len(nY)-1,largeurCase+1):
+        for x in range(1,len(nX)-1,largeurCase+1):
+            coordonneeMurH.append([x,y])
+    return coordonneeMurH
+
+def creerPassageH(nX,nY,largeurCase,position):
+    murEnlever = coordonneMurH(nX,nY,largeurCase)[position]
+    for x in range (murEnlever[0],murEnlever[0]+largeurCase):
+        setPixel(x,murEnlever[1],struct(r=15,g=15,b=15))
+    return murEnlever
+
+def creerPassageV(nX,nY,largeurCase,position):
+    murEnlever = coordonneMurV(nX,nY,largeurCase)[position]
+    for y in range (murEnlever[1],murEnlever[1]+largeurCase):
+        setPixel(murEnlever[0],y,struct(r=15,g=15,b=15))
+    return murEnlever
+
+def laby(nX, nY, largeurCase) :
+    coordonneMurV(nX,nY,largeurCase)
+    coordonneMurH(nX,nY,largeurCase)
+    celInitiale = math.floor(random()*len(N))
+
+    while len(caseLaby) <= (nX*nY)-1 :
+        choixCase = N
+        caseLaby = []
+        ajouter(caseLaby,N[celInitiale])
+        retirer(choixCase,N[celInitiale])
+        celInitialeXY = tableXY[celInitiale]
+
+        choixMur(celInitialeXY[0],celInitialeXY[1],nX,nY)
+        if typeMur == 'nord' or typeMur == 'sud' :
+            creerPassageH(nX,nY,largeurCase,position)
+        else : creerPassageV(nX,nY,largeurCase,position)
+    
+       
+
