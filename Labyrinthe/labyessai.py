@@ -1,8 +1,8 @@
 import math
 import random
 
-nX = 3
-nY = 3
+X=None
+Y=None
 
 N=[]; E=[]; S=[]; O=[]
 
@@ -11,6 +11,7 @@ murH=[]; murV=[]
 celChoisi = []
 tableXY = []
 
+typeMur=''; numMur = 0
 
 def contient(tab,x):
     for i in range(len(tab)):
@@ -50,14 +51,16 @@ def murs(x,y):
             O.append(tableXY[i][0]+tableXY[i][1]*(x+1))
     return N,E,S,O
 
-def mursH():
+def mursH(nX,nY):
+    murs(nX,nY)
     global murH
     for i in N:
         if (i in S) == True:
             murH.append(i)
     return murH
 
-def mursV():
+def mursV(nX,nY):
+    murs(nX,nY)
     global murV
     for i in O:
         if (i in E) == True :
@@ -81,14 +84,13 @@ def voisins(x,y,nX,nY):
         voisins.append(v1) 
     return voisins
 
-print(len(voisins(1,1,3,3)))
-
 def position(table,valeur):
     for position in range(len(table)) :
         if table[position] == valeur :
             return position
 
 def choixMur(x,y,nX,nY) :
+    global typeMur, numMur
     nbrVoisins = len(voisins(x,y,nX,nY))                                                        #trouve les voisins
     choix = tableXY[voisins(x,y,nX,nY)[math.floor(random()*nbrVoisins)]]             #choisi le voisin et donne son numéro de cellule
     if choix[0] == x and choix[1] == y-1:                                    #on cherche le mur entre la cellule et sa voisine
@@ -125,16 +127,16 @@ def coordonneesPixels(nX,nY,largeurCase):
 def coordonneMurV(nX,nY,largeurCase):
     coordonneesPixels(nX,nY,largeurCase)
     coordonneeMurV=[]
-    for y in range(1,len(nY)-1,largeurCase+1):
-        for x in range(largeurCase+1,len(nX)-1,largeurCase+1):
+    for y in range(1,len(Y)-1,largeurCase+1):
+        for x in range(largeurCase+1,len(X)-1,largeurCase+1):
             coordonneeMurV.append([x,y])
     return coordonneeMurV
             
 def coordonneMurH(nX,nY,largeurCase):
     coordonneesPixels(nX,nY,largeurCase)
     coordonneeMurH=[]
-    for y in range(largeurCase+1,len(nY)-1,largeurCase+1):
-        for x in range(1,len(nX)-1,largeurCase+1):
+    for y in range(largeurCase+1,len(Y)-1,largeurCase+1):
+        for x in range(1,len(X)-1,largeurCase+1):
             coordonneeMurH.append([x,y])
     return coordonneeMurH
 
@@ -150,10 +152,63 @@ def creerPassageV(nX,nY,largeurCase,position):
         setPixel(murEnlever[0],y,struct(r=15,g=15,b=15))
     return murEnlever
 
+def trace(nX,nY,largeurCase):
+    setScreenMode(nX*largeurCase+(nX+1),nY*largeurCase+(nY+1))
+
+#Fonction qui dessine la grille de pixel rectangulaire initialement pleine
+#afin de générer le labyrinthe
+def rectangle(nX,nY,largeurCase):  
+    color(nX,nY,largeurCase)
+    coteV(nX,nY,largeurCase)
+    coteH(nX,nY,largeurCase)
+    entree(nX,largeurCase)
+    sortie(nX,nY,largeurCase)
+
+def color(nX,nY,largeurCase):
+    trace(nX,nY,largeurCase)
+    x = nX*largeurCase+nX
+    y = nY*largeurCase+nY
+    for i in range(1,x):
+        for j in range(1,y):
+            setPixel(i,j,struct(r=15,g=15,b=15))
+                        
+def coteV(nX,nY,largeurCase):
+    x = nX*largeurCase+nX
+    y = nY*largeurCase+nY
+    for i in range(0,x,largeurCase+1):
+        for j in range(0,y):
+            setPixel(i,j,struct(r=0,g=0,b=0))
+            
+def coteH(nX,nY,largeurCase):
+    x = nX*largeurCase+nX
+    y = nY*largeurCase+nY
+    for k in range(0,y,largeurCase+1):
+        for b in range(0,x):
+            setPixel(b,k,struct(r=0,g=0,b=0))
+
+def entree(nX,largeurCase):
+    for i in range(1,largeurCase+1):
+        setPixel(i,0,struct(r=15,g=15,b=15))
+        
+def sortie(nX,nY,largeurCase):
+    y = nY*largeurCase+nY
+    x1 = (nX-1)*largeurCase+nX
+    x2 = nX*largeurCase+nX
+    for i in range(x1,x2):
+        setPixel(i,y,struct(r=15,g=15,b=15))
+
 def laby(nX, nY, largeurCase) :
+    rectangle(nX,nY,largeurCase)
+    murs(nX,nY)
     coordonneMurV(nX,nY,largeurCase)
     coordonneMurH(nX,nY,largeurCase)
     celInitiale = math.floor(random()*len(N))
+    print(celInitiale)
+    celInitialeXY = tableXY[celInitiale]
+    choixMur(celInitialeXY[0],celInitialeXY[1],nX,nY)
+    if typeMur == 'nord' or typeMur== 'sud' :
+        creerPassageH(nX,nY,largeurCase,numMur)
+    else : creerPassageV(nX,nY,largeurCase,numMur)
 
     while len(caseLaby) <= (nX*nY)-1 :
         choixCase = N
@@ -161,7 +216,6 @@ def laby(nX, nY, largeurCase) :
         ajouter(caseLaby,N[celInitiale])
         retirer(choixCase,N[celInitiale])
         celInitialeXY = tableXY[celInitiale]
-
         choixMur(celInitialeXY[0],celInitialeXY[1],nX,nY)
         if typeMur == 'nord' or typeMur== 'sud' :
             creerPassageH(nX,nY,largeurCase,numMur)
