@@ -1,3 +1,5 @@
+#Je me base sur l'idée d'un labyrinthe par exploration exhaustive de wikipédia
+
 import math
 import random
 
@@ -8,8 +10,10 @@ N=[]; E=[]; S=[]; O=[]
 
 murH=[]; murV=[]
 
-celChoisi = []
+choixPossible = []; celChoisi = []
 tableXY = []
+
+caseLaby=[]; celluleSuivante=[]
 
 typeMur=''; numMur = 0
 
@@ -89,27 +93,44 @@ def position(table,valeur):
         if table[position] == valeur :
             return position
 
+def verifierVoisin(x,y,nX,nY):
+    global choixPossible
+    v = voisins(x,y,nX,nY)
+    for choix in range(v[0],len(v)):
+        if contient(caseLaby,choix) == False:
+            ajouter(choixPossible,choix)
+    return choixPossible
+
+
+
 def choixMur(x,y,nX,nY) :
-    global typeMur, numMur
-    nbrVoisins = len(voisins(x,y,nX,nY))                                                        #trouve les voisins
-    choix = tableXY[voisins(x,y,nX,nY)[math.floor(random()*nbrVoisins)]]             #choisi le voisin et donne son numéro de cellule
-    if choix[0] == x and choix[1] == y-1:                                    #on cherche le mur entre la cellule et sa voisine
-        murChoisi = x+y*nX 
-        typeMur = 'nord'
-        numMur = position(mursH(nX,nY),murChoisi)
-    elif choix[0] == x and choix[1] == y+1 :
-        murChoisi = x+(y+1)*nX
-        typeMur = 'sud'
-        numMur = position(mursH(nX,nY),murChoisi)
-    elif choix[0] == x-1 and choix[1] == y: 
-        murChoisi = x+y*(nX+1)
-        typeMur = 'ouest'
-        numMur = position(mursV(nX,nY),murChoisi)
-    elif choix[0] == x+1 and choix[1] == y:
-        murChoisi = 1+x+y*(nX+1)
-        typeMur = 'est'
-        numMur = position(mursV(nX,nY),murChoisi)
-    return typeMur, numMur
+    #revoir calcule murChoisi !!!!! mal copié-collé certainement
+    global typeMur, numMur, celluleSuivante
+    verifierVoisin(x,y,nX,nY)
+    nbrVoisins = len(choixPossible)                                     #trouve les voisins
+    if len(choixPossible) > 0 :
+        choix = tableXY[choixPossible[math.floor(random()*nbrVoisins)]]     #choisi le voisin et donne son numéro de cellule          
+        if choix[0] == x and choix[1] == y-1:                                    #on cherche le mur entre la cellule et sa voisine
+            murChoisi = x+y*nX 
+            typeMur = 'nord'
+            numMur = position(mursH(nX,nY),murChoisi)
+        elif choix[0] == x and choix[1] == y+1 :
+            murChoisi = x+(y+1)*nX
+            typeMur = 'sud'
+            numMur = position(mursH(nX,nY),murChoisi)
+        elif choix[0] == x-1 and choix[1] == y: 
+            murChoisi = x+y*(nX+1)
+            typeMur = 'ouest'
+            numMur = position(mursV(nX,nY),murChoisi)
+        elif choix[0] == x+1 and choix[1] == y:
+            murChoisi = 1+x+y*(nX+1)
+            typeMur = 'est'
+            numMur = position(mursV(nX,nY),murChoisi)
+        celluleSuivante = choix
+    else :
+        #retourner à la cellule précédente, et refaire ce processus
+    
+        return typeMur, numMur, celluleSuivante
 
 
 def iota(n):
@@ -197,29 +218,26 @@ def sortie(nX,nY,largeurCase):
     for i in range(x1,x2):
         setPixel(i,y,struct(r=15,g=15,b=15))
 
-def laby(nX, nY, largeurCase) :
-    rectangle(nX,nY,largeurCase)
+def celluleInitiale(nX,nY,largeurCase):
     murs(nX,nY)
-    coordonneMurV(nX,nY,largeurCase)
-    coordonneMurH(nX,nY,largeurCase)
+    global caseLaby
     celInitiale = math.floor(random()*len(N))
-    print(celInitiale)
     celInitialeXY = tableXY[celInitiale]
     choixMur(celInitialeXY[0],celInitialeXY[1],nX,nY)
     if typeMur == 'nord' or typeMur== 'sud' :
         creerPassageH(nX,nY,largeurCase,numMur)
     else : creerPassageV(nX,nY,largeurCase,numMur)
+    return caseLaby.append(celInitiale)
 
-    while len(caseLaby) <= (nX*nY)-1 :
-        choixCase = N
-        caseLaby = []
-        ajouter(caseLaby,N[celInitiale])
-        retirer(choixCase,N[celInitiale])
-        celInitialeXY = tableXY[celInitiale]
-        choixMur(celInitialeXY[0],celInitialeXY[1],nX,nY)
-        if typeMur == 'nord' or typeMur== 'sud' :
-            creerPassageH(nX,nY,largeurCase,numMur)
-        else : creerPassageV(nX,nY,largeurCase,numMur)
+def laby(nX, nY, largeurCase) :
+    rectangle(nX,nY,largeurCase)
+    celluleInitiale(nX,nY,largeurCase)
+    
+
+    while len(caseLaby) <= (nX*nY)-2 :
+        choixMur(celluleSuivante[0],celluleSuivante[1],nX,nY)
+
+
     
        
 
