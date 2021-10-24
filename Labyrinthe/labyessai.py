@@ -64,7 +64,7 @@ def mursV():
             murV.append(i)
     return murV
 
-def voisin(x,y,nX,nY):
+def voisins(x,y,nX,nY):
     nombre(nX,nY)
     voisins=[]
     if [x,y-1] in tableXY:
@@ -81,32 +81,32 @@ def voisin(x,y,nX,nY):
         voisins.append(v1) 
     return voisins
 
+print(len(voisins(1,1,3,3)))
+
 def position(table,valeur):
     for position in range(len(table)) :
         if table[position] == valeur :
             return position
 
 def choixMur(x,y,nX,nY) :
-    nord = x+(y-1)*nX; sud = x+(y+1)*nX
-    ouest = (x-1)+y*nX; est = (x+1)+y*nX
-    voisin(x,y,nX,nY)                                                        #trouve les voisins
-    choix = tableXY[voisin[math.floor(random()*len(choixMur))]]              #choisi le voisin et donne son numéro de cellule
-    if choix[0] == x and choix[1] == y+1:                                    #on cherche le mur entre la cellule et sa voisine
-        murChoisi = nord
+    nbrVoisins = len(voisins(x,y,nX,nY))                                                        #trouve les voisins
+    choix = tableXY[voisins(x,y,nX,nY)[math.floor(random()*nbrVoisins)]]             #choisi le voisin et donne son numéro de cellule
+    if choix[0] == x and choix[1] == y-1:                                    #on cherche le mur entre la cellule et sa voisine
+        murChoisi = x+y*nX 
         typeMur = 'nord'
-        numMur = position(mursH,murChoisi)
-    if choix[0] == x and choix[1] == y-1 :
-        murChoisi = sud
+        numMur = position(mursH(nX,nY),murChoisi)
+    elif choix[0] == x and choix[1] == y+1 :
+        murChoisi = x+(y+1)*nX
         typeMur = 'sud'
-        numMur = position(mursH,murChoisi)
-    if choix[0] == x+1 and choix[1] == y: 
-        murChoisi = ouest
+        numMur = position(mursH(nX,nY),murChoisi)
+    elif choix[0] == x-1 and choix[1] == y: 
+        murChoisi = x+y*(nX+1)
         typeMur = 'ouest'
-        numMur = position(mursV,murChoisi)
-    if choix[0] == x-1 and choix[1] == y:
-        murChoisi = est
+        numMur = position(mursV(nX,nY),murChoisi)
+    elif choix[0] == x+1 and choix[1] == y:
+        murChoisi = 1+x+y*(nX+1)
         typeMur = 'est'
-        numMur = position(mursV,murChoisi)
+        numMur = position(mursV(nX,nY),murChoisi)
     return typeMur, numMur
 
 
@@ -163,9 +163,9 @@ def laby(nX, nY, largeurCase) :
         celInitialeXY = tableXY[celInitiale]
 
         choixMur(celInitialeXY[0],celInitialeXY[1],nX,nY)
-        if typeMur == 'nord' or typeMur == 'sud' :
-            creerPassageH(nX,nY,largeurCase,position)
-        else : creerPassageV(nX,nY,largeurCase,position)
+        if typeMur == 'nord' or typeMur== 'sud' :
+            creerPassageH(nX,nY,largeurCase,numMur)
+        else : creerPassageV(nX,nY,largeurCase,numMur)
     
        
 
