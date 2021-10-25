@@ -65,6 +65,7 @@ def nombre(x,y):
             tableXY.append([j,i])
     return tableXY
 
+# print(nombre(3,3))
  
 #Valeurs des murs Nord, Est, Sud et Ouest
 def murs(x,y): 
@@ -76,8 +77,22 @@ def murs(x,y):
             E.append(1+tableXY[i][0]+tableXY[i][1]*(x+1))
             S.append(tableXY[i][0]+(tableXY[i][1]+1)*x)
             O.append(tableXY[i][0]+tableXY[i][1]*(x+1))
-    return N,E,S,O
-#print(murs(3,3))
+    return S,len(S)
+# print(murs(3,3))
+
+#Calcul les murs sans toucher aux murs sur cotes
+def new_murs(x,y):
+    murs(x,y)
+    for i in range(x):
+        N.remove(i)
+    for i in range(x-1,len(E)-y+1,x-1):
+        del E[i]
+    for i in range(len(S)-1,len(S)-(x+1),-1):
+        del S[i]
+    for i in range(0,len(O)-y,x-1):
+        del O[i]
+    return E
+# print(new_murs(8,4))
 
 #Sépare les coordonnées x et y des cases du labytinthe en deux listes respectives
 def coordonnéesCases(x,y):
@@ -89,7 +104,7 @@ def coordonnéesCases(x,y):
     for i in range(0,len(N),x):
         caseY.append(tableXY[i][1])
     return caseX,caseY
-print(coordonnéesCases(3,3))
+# print(coordonnéesCases(3,3))
 
 #Donne la liste des numéros de cellules voisines à (x,y)
 def voisin(x,y,nX,nY):
@@ -188,19 +203,20 @@ def cave(x,y):
     mursH()
     mursV()
     global cavite, front
-    X = tableXY[(math.floor(random()*(len(N)-1)))]
-    if X== tableXY[x-1][0] and X== tableXY[x-1][1]:
-        ajouter(cavite,tableXY[(math.floor(random()*(len(N)-1)))])
-        ajouter(front,voisin(cavite[0][0],cavite[0][1],x,y))
-    for j in range(x):
-        for i in range(len(cavite)):
-            retirer(N,cavite[i][0]+cavite[i][1]*x)
-            retirer(murH,cavite[i][0]+cavite[i][1]*x)
-            retirer(murV,cavite[i][0]+cavite[i][1]*x)
-            retirer(tableXY, cavite[i])
-        if X!= tableXY[x-1][0] and X!= tableXY[x-1][1]:
-            v=front[(math.floor(random()*(len(front)-1)))][(math.floor(random()*(len(front)-1)))] 
-            cavite.append(tableXY[v]) 
+    # for i in range(len())
+    # X = tableXY[(math.floor(random()*(len(N)-1)))]
+    # if X== tableXY[x-1][0] and X== tableXY[x-1][1]:
+    #     ajouter(cavite,tableXY[(math.floor(random()*(len(N)-1)))])
+    #     ajouter(front,voisin(cavite[0][0],cavite[0][1],x,y))
+    # for j in range(x):
+    #     for i in range(len(cavite)):
+    #         retirer(N,cavite[i][0]+cavite[i][1]*x)
+    #         retirer(murH,cavite[i][0]+cavite[i][1]*x)
+    #         retirer(murV,cavite[i][0]+cavite[i][1]*x)
+    #         retirer(tableXY, cavite[i])
+    #     if X!= tableXY[x-1][0] and X!= tableXY[x-1][1]:
+    #         v=front[(math.floor(random()*(len(front)-1)))][(math.floor(random()*(len(front)-1)))] 
+    #         cavite.append(tableXY[v]) 
         
     return cavite,N
 
