@@ -308,7 +308,7 @@ def creationChemin(nX,nY,largeurCase):
             creerPassageH(nX,nY,largeurCase,numMur)
         else : creerPassageV(nX,nY,largeurCase,numMur)
         ajouter(cave,position(tableXY,celluleSuivante))
-        if len(cave)>3 and (celluleSuivante == tableXY[len(tableXY)-1] or celluleSuivante == tableXY[0]):
+        if contient(cave,0)==True and contient(cave,len(N)-1)==True:
             repeter = False
 
 def laby(nX, nY, largeurCase) :
