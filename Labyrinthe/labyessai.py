@@ -62,8 +62,7 @@ def murs(nX,nY):
 #La fonction mursH prends aussi deux nombres en paramétre qui sont nX et nY. Elle retourne la liste 
 #des numéros des murs horizontaux intérieurs de la grille en faisant appelle à la fonction murs.
 def mursH(nX,nY):
-    murs(nX,nY)
-    global murH
+    global murH, N, S
     for i in N:
         if (i in S) == True:
             murH.append(i)
@@ -72,8 +71,7 @@ def mursH(nX,nY):
 #Cette fonction prends les mêmes paramétres que la fonction mursH et réalise la même chose, sauf que 
 #ce sont la liste des murs verticaux intérieurs qui est retournée.
 def mursV(nX,nY):
-    murs(nX,nY)
-    global murV
+    global murV, E, O
     for i in O:
         if (i in E) == True :
             murV.append(i)
@@ -83,7 +81,7 @@ def mursV(nX,nY):
 #dont on veut trouver les numéros des cellules voisines ainsi que nX et nY. Elle retourne une liste
 #composée des numéros des cellules voisines à la cellule (x,y).
 def voisins(x,y,nX,nY):
-    murs(nX,nY)
+    global tableXY
     voisins=[]
     if [x,y-1] in tableXY:
         v4 = x+(y-1)*nX
@@ -124,7 +122,6 @@ def verifierVoisin(x,y,nX,nY):
     print(cave)
     front.clear()
     v = voisins(x,y,nX,nY)
-    print(v)
     for possibilite in range(0,len(v)):
         if contient(cave,tableXY[v[possibilite]]) == False:
             ajouter(front,v[possibilite])
@@ -133,7 +130,8 @@ def verifierVoisin(x,y,nX,nY):
 
 
 def choixMur(x,y,nX,nY) :
-    global front                                       
+    global front
+    print(front)
     nbrVoisins = len(front)
     if nbrVoisins != 0 :
             decisionMur(x,y,nX,nY,nbrVoisins)
@@ -146,8 +144,8 @@ def choixMur(x,y,nX,nY) :
 
 
 def decisionMur(x,y,nX,nY,nbrVoisins):
-    global typeMur, numMur, choix, front, tableXY
-    mursV(nX,nY); mursH(nX,nY)
+    global typeMur, numMur, choix, front, tableXY, murV, murH
+    print(murV), print(murH)
     choix = tableXY[front[math.floor(random()*nbrVoisins)]]
     print(choix)
     if choix[0] == x and choix[1] == y-1:                       #on cherche le mur entre la cellule et sa voisine
@@ -166,6 +164,7 @@ def decisionMur(x,y,nX,nY,nbrVoisins):
             murChoisi = 1+x+y*(nX+1)
             typeMur = 'est'
             numMur = position(murV,murChoisi)
+    print(numMur)
     return typeMur, numMur, choix
 
 def iota(n):
@@ -208,22 +207,28 @@ def coordonneMurH(nX,nY,largeurCase):
     return coordonneeMurH
 
 
-#Cette fonction prends trois nombres en paramétres (nX, nY, largeurCase) ainsi
-#que la fonction position. Elle permet de créer un passage entre deux cellules
-#voisines. C'est-à-dire qu'elle supprime le mur se trouvant entre deux cellules.
+#Cette fonction prends quatre nombres en paramétres (nX, nY, largeurCase et la 
+#position, soit le numéro du mur à enlever. Elle permet de créer un passage 
+#entre deux cellules voisines. C'est-à-dire qu'elle supprime le mur se trouvant 
+#entre deux cellules.
 
 def creerPassageH(nX,nY,largeurCase,position):
-    murEnlever = coordonneMurH(nX,nY,largeurCase)[position]
+    coordonneMurH(nX,nY,largeurCase)
+    print(coordonneeMurH)
+    print(position)
+    murEnlever = coordonneeMurH[position]
     for x in range (murEnlever[0],murEnlever[0]+largeurCase):
         setPixel(x,murEnlever[1],struct(r=15,g=15,b=15))
-    retirer(coordonneeMurH,murEnlever)
 
 
 def creerPassageV(nX,nY,largeurCase,position):
-    murEnlever = coordonneMurV(nX,nY,largeurCase)[position]
+    coordonneMurV(nX,nY,largeurCase)
+    print(coordonneeMurV)
+    print(position)
+    murEnlever = coordonneeMurV[position]
     for y in range (murEnlever[1],murEnlever[1]+largeurCase):
         setPixel(murEnlever[0],y,struct(r=15,g=15,b=15))
-    retirer(coordonneeMurV,murEnlever)
+    
 
 def trace(nX,nY,largeurCase):
     setScreenMode(nX*largeurCase+(nX+1),nY*largeurCase+(nY+1))
@@ -277,8 +282,7 @@ def sortie(nX,nY,largeurCase):
 #première cellule au hasard qui aura un de ses murs supprimés.
 
 def celluleInitiale(nX,nY,largeurCase):
-    global cave
-    murs(nX,nY)
+    global cave, N
     celInitiale = math.floor(random()*(len(N)))
     celInitialeXY = tableXY[celInitiale]
     print(celInitialeXY)
@@ -309,9 +313,10 @@ def creationChemin(nX,nY,largeurCase):
 
 def laby(nX, nY, largeurCase) :
     rectangle(nX,nY,largeurCase)
+    murs(nX,nY); mursV(nX,nY); mursH(nX,nY)
+    print(murV, murH)
     celluleInitiale(nX,nY,largeurCase)
     creationChemin(nX,nY,largeurCase)
-
     
 
 
