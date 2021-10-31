@@ -8,7 +8,7 @@ tableXY = []
 
 front = []; celChoisi = []; cave=[]; choix=[]
 
-typeMur=''; numMur = 0
+typeMur=''; numMur = 0; murChoisi = 0
 
 #La fonction contient vérifie si la valeur "x" se trouve dans la table. Elle retourne un booléen 
 #selon si la table contient ou non la valeur "x"
@@ -81,21 +81,21 @@ def mursV(nX,nY):
 #dont on veut trouver les numéros des cellules voisines ainsi que nX et nY. Elle retourne une liste
 #composée des numéros des cellules voisines à la cellule (x,y).
 def voisins(x,y,nX,nY):
-    nombre(nX,nY)
-    voisin=[]
+    global tableXY
+    voisins=[]
     if [x,y-1] in tableXY:
         v4 = x+(y-1)*nX
-        voisin.append(v4) 
+        voisins.append(v4) 
     if [x-1,y] in tableXY:
         v2= (x-1)+y*nX
-        voisin.append(v2)
+        voisins.append(v2)
     if [x,y+1] in tableXY:
         v3 = x+(y+1)*nX
-        voisin.append(v3)
+        voisins.append(v3)
     if [x+1,y] in tableXY:
         v1 = (x+1)+y*nX
-        voisin.append(v1) 
-    return voisin
+        voisins.append(v1) 
+    return voisins
 
 
 #Cette fonction prends deux paramétres en charge, soit une table et une valeur dont on
@@ -118,35 +118,34 @@ def position(table,valeur):
 #numéro de cellule à la liste front.
 
 def verifierVoisin(x,y,nX,nY):
-    print(cave)
+    global front, cave
     front.clear()
     v = voisins(x,y,nX,nY)
     for possibilite in range(0,len(v)):
-        if contient(cave,tableXY[v[possibilite]]) == False:
+        if contient(cave,v[possibilite]) == False:
             ajouter(front,v[possibilite])
     print(front)
     return front
 
-print(voisins(3,3,3,3))
-
-
+##################################################################
 def choixMur(x,y,nX,nY) :
-    global front
+    global front, tableXY
     print(front)
-    print(cave)
     nbrVoisins = len(front)
     if nbrVoisins != 0 :
             decisionMur(x,y,nX,nY,nbrVoisins)
     else :
         for i in range(len(cave)-1,-1,-1):
-            cellulePrecedente = cave[i]
+            cellulePrecedente = tableXY[cave[i]]
             verifierVoisin(cellulePrecedente[0],cellulePrecedente[1],nX,nY)
             if len(front) != 0 :
                 decisionMur(x,y,nX,nY,nbrVoisins)
+######################################################################
+#Problème quand on reviens en arrière pour casser les murs
+
 
 def decisionMur(x,y,nX,nY,nbrVoisins):
-    global typeMur, numMur, choix, front, tableXY, murV, murH
-    print(murV), print(murH)
+    global typeMur, numMur, choix, front, tableXY, murV, murH, murChoisi
     choix = tableXY[front[math.floor(random()*nbrVoisins)]]
     print(choix)
     if choix[0] == x and choix[1] == y-1:                       #on cherche le mur entre la cellule et sa voisine
@@ -165,8 +164,8 @@ def decisionMur(x,y,nX,nY,nbrVoisins):
             murChoisi = 1+x+y*(nX+1)
             typeMur = 'est'
             numMur = position(murV,murChoisi)
-    print(numMur)
-    return typeMur, numMur, choix
+    print(typeMur)
+    return typeMur, numMur, choix, murChoisi
 
 def iota(n):
     liste = []
@@ -214,18 +213,14 @@ def coordonneMurH(nX,nY,largeurCase):
 #entre deux cellules.
 
 def creerPassageH(nX,nY,largeurCase,position):
-    coordonneMurH(nX,nY,largeurCase)
-    print(coordonneeMurH)
-    print(position)
+    global coordonneeMurH
     murEnlever = coordonneeMurH[position]
     for x in range (murEnlever[0],murEnlever[0]+largeurCase):
         setPixel(x,murEnlever[1],struct(r=15,g=15,b=15))
 
 
 def creerPassageV(nX,nY,largeurCase,position):
-    coordonneMurV(nX,nY,largeurCase)
-    print(coordonneeMurV)
-    print(position)
+    global coordonneeMurV
     murEnlever = coordonneeMurV[position]
     for y in range (murEnlever[1],murEnlever[1]+largeurCase):
         setPixel(murEnlever[0],y,struct(r=15,g=15,b=15))
@@ -298,8 +293,7 @@ def celluleInitiale(nX,nY,largeurCase):
 
 def creationChemin(nX,nY,largeurCase):
     global cave
-    repeter = True
-    while repeter :
+    while len(cave)!=len(N):
         global choix
         celluleSuivante = choix
         print(celluleSuivante)
@@ -309,12 +303,13 @@ def creationChemin(nX,nY,largeurCase):
             creerPassageH(nX,nY,largeurCase,numMur)
         else : creerPassageV(nX,nY,largeurCase,numMur)
         ajouter(cave,position(tableXY,celluleSuivante))
-        if contient(cave,0)==True and contient(cave,len(N)-1)==True:
-            repeter = False
+        print(cave)
+        print(N)
 
 def laby(nX, nY, largeurCase) :
     rectangle(nX,nY,largeurCase)
     murs(nX,nY); mursV(nX,nY); mursH(nX,nY)
+    coordonneMurH(nX,nY,largeurCase); coordonneMurV(nX,nY,largeurCase)
     print(murV, murH)
     celluleInitiale(nX,nY,largeurCase)
     creationChemin(nX,nY,largeurCase)
