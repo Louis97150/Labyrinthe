@@ -81,21 +81,21 @@ def mursV(nX,nY):
 #dont on veut trouver les numéros des cellules voisines ainsi que nX et nY. Elle retourne une liste
 #composée des numéros des cellules voisines à la cellule (x,y).
 def voisins(x,y,nX,nY):
-    global tableXY
-    voisins=[]
+    nombre(nX,nY)
+    voisin=[]
     if [x,y-1] in tableXY:
         v4 = x+(y-1)*nX
-        voisins.append(v4) 
+        voisin.append(v4) 
     if [x-1,y] in tableXY:
         v2= (x-1)+y*nX
-        voisins.append(v2)
+        voisin.append(v2)
     if [x,y+1] in tableXY:
         v3 = x+(y+1)*nX
-        voisins.append(v3)
+        voisin.append(v3)
     if [x+1,y] in tableXY:
         v1 = (x+1)+y*nX
-        voisins.append(v1) 
-    return voisins
+        voisin.append(v1) 
+    return voisin
 
 
 #Cette fonction prends deux paramétres en charge, soit une table et une valeur dont on
@@ -118,7 +118,6 @@ def position(table,valeur):
 #numéro de cellule à la liste front.
 
 def verifierVoisin(x,y,nX,nY):
-    global front, cave, tableXY
     print(cave)
     front.clear()
     v = voisins(x,y,nX,nY)
@@ -128,10 +127,13 @@ def verifierVoisin(x,y,nX,nY):
     print(front)
     return front
 
+print(voisins(3,3,3,3))
+
 
 def choixMur(x,y,nX,nY) :
     global front
     print(front)
+    print(cave)
     nbrVoisins = len(front)
     if nbrVoisins != 0 :
             decisionMur(x,y,nX,nY,nbrVoisins)
@@ -141,7 +143,6 @@ def choixMur(x,y,nX,nY) :
             verifierVoisin(cellulePrecedente[0],cellulePrecedente[1],nX,nY)
             if len(front) != 0 :
                 decisionMur(x,y,nX,nY,nbrVoisins)
-
 
 def decisionMur(x,y,nX,nY,nbrVoisins):
     global typeMur, numMur, choix, front, tableXY, murV, murH
@@ -317,10 +318,3 @@ def laby(nX, nY, largeurCase) :
     print(murV, murH)
     celluleInitiale(nX,nY,largeurCase)
     creationChemin(nX,nY,largeurCase)
-    
-
-
-
-    
-       
-
