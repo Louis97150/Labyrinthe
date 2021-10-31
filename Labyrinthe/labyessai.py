@@ -124,25 +124,22 @@ def verifierVoisin(x,y,nX,nY):
     for possibilite in range(0,len(v)):
         if contient(cave,v[possibilite]) == False:
             ajouter(front,v[possibilite])
-    print(front)
     return front
 
-##################################################################
+
 def choixMur(x,y,nX,nY) :
     global front, tableXY
-    print(front)
     nbrVoisins = len(front)
-    if nbrVoisins != 0 :
+    if nbrVoisins > 0 :
             decisionMur(x,y,nX,nY,nbrVoisins)
-    else :
+    if nbrVoisins == 0:
         for i in range(len(cave)-1,-1,-1):
-            cellulePrecedente = tableXY[cave[i]]
-            verifierVoisin(cellulePrecedente[0],cellulePrecedente[1],nX,nY)
-            if len(front) != 0 :
-                decisionMur(x,y,nX,nY,nbrVoisins)
-######################################################################
-#Problème quand on reviens en arrière pour casser les murs
-
+            celPrecedente = tableXY[cave[i]]
+            verifierVoisin(celPrecedente[0],celPrecedente[1],nX,nY)
+            nbrVoisins = len(front)
+            if nbrVoisins > 0 :
+                decisionMur(celPrecedente[0],celPrecedente[1],nX,nY,nbrVoisins)
+            else : continue
 
 def decisionMur(x,y,nX,nY,nbrVoisins):
     global typeMur, numMur, choix, front, tableXY, murV, murH, murChoisi
@@ -281,14 +278,12 @@ def celluleInitiale(nX,nY,largeurCase):
     global cave, N
     celInitiale = math.floor(random()*(len(N)))
     celInitialeXY = tableXY[celInitiale]
-    print(celInitialeXY)
     verifierVoisin(celInitialeXY[0],celInitialeXY[1],nX,nY)
     choixMur(celInitialeXY[0],celInitialeXY[1],nX,nY)
     if typeMur == 'nord' or typeMur== 'sud' :
         creerPassageH(nX,nY,largeurCase,numMur)
     else : creerPassageV(nX,nY,largeurCase,numMur)
     ajouter(cave,celInitiale)
-    print(cave)
     return cave
 
 def creationChemin(nX,nY,largeurCase):
@@ -296,20 +291,16 @@ def creationChemin(nX,nY,largeurCase):
     while len(cave)!=len(N):
         global choix
         celluleSuivante = choix
-        print(celluleSuivante)
+        ajouter(cave,position(tableXY,celluleSuivante))
         verifierVoisin(celluleSuivante[0],celluleSuivante[1],nX,nY)
         choixMur(celluleSuivante[0],celluleSuivante[1],nX,nY)
         if typeMur == 'nord' or typeMur == 'sud' :
             creerPassageH(nX,nY,largeurCase,numMur)
         else : creerPassageV(nX,nY,largeurCase,numMur)
-        ajouter(cave,position(tableXY,celluleSuivante))
-        print(cave)
-        print(N)
 
 def laby(nX, nY, largeurCase) :
     rectangle(nX,nY,largeurCase)
     murs(nX,nY); mursV(nX,nY); mursH(nX,nY)
     coordonneMurH(nX,nY,largeurCase); coordonneMurV(nX,nY,largeurCase)
-    print(murV, murH)
     celluleInitiale(nX,nY,largeurCase)
     creationChemin(nX,nY,largeurCase)
