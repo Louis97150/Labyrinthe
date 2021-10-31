@@ -3,6 +3,8 @@
 
 #Ce programme crée un labyrinthe rectangulaire aléatoire qui posséde une solution unique
 
+import random
+
 tableXY=[]
 N=[]
 E=[]
@@ -16,7 +18,7 @@ murH=[]
 murV=[]
 
 cavite=[]
-front=[]
+front=None
 
 #Fonction qui crée une liste de nombre de 0 à n-1
 def iota(n):
@@ -77,8 +79,8 @@ def murs(x,y):
             E.append(1+tableXY[i][0]+tableXY[i][1]*(x+1))
             S.append(tableXY[i][0]+(tableXY[i][1]+1)*x)
             O.append(tableXY[i][0]+tableXY[i][1]*(x+1))
-    return S,len(S)
-# print(murs(3,3))
+    return N,S,E,O
+# print(murs(3,2))
 
 #Calcul les murs sans toucher aux murs sur cotes
 def new_murs(x,y):
@@ -91,8 +93,9 @@ def new_murs(x,y):
         del S[i]
     for i in range(0,len(O)-y,x-1):
         del O[i]
-    return E
-# print(new_murs(8,4))
+    return N,S,E,O
+# print(new_murs(3,2))
+
 
 #Sépare les coordonnées x et y des cases du labytinthe en deux listes respectives
 def coordonnéesCases(x,y):
@@ -123,7 +126,7 @@ def voisin(x,y,nX,nY):
         v1 = (x+1)+y*nX
         voisins.append(v1) 
     return voisins
-#print(voisin(1,1,3,3))
+print(voisin(2,2,3,2))
 
 def mursH():
     global murH
@@ -198,27 +201,30 @@ def sortie(nX,nY,largeurCase):
     for i in range(x1,x2):
         setPixel(i,y,struct(r=15,g=15,b=15))
         
-def cave(x,y):
-    murs(x,y)
+def cave(x,y,nX,nY):
+    new_murs(x,y)
     mursH()
     mursV()
     global cavite, front
-    # for i in range(len())
-    # X = tableXY[(math.floor(random()*(len(N)-1)))]
-    # if X== tableXY[x-1][0] and X== tableXY[x-1][1]:
-    #     ajouter(cavite,tableXY[(math.floor(random()*(len(N)-1)))])
-    #     ajouter(front,voisin(cavite[0][0],cavite[0][1],x,y))
-    # for j in range(x):
-    #     for i in range(len(cavite)):
-    #         retirer(N,cavite[i][0]+cavite[i][1]*x)
-    #         retirer(murH,cavite[i][0]+cavite[i][1]*x)
-    #         retirer(murV,cavite[i][0]+cavite[i][1]*x)
-    #         retirer(tableXY, cavite[i])
-    #     if X!= tableXY[x-1][0] and X!= tableXY[x-1][1]:
-    #         v=front[(math.floor(random()*(len(front)-1)))][(math.floor(random()*(len(front)-1)))] 
-    #         cavite.append(tableXY[v]) 
+    cavite.append(N[random.randint(0,len(N)-1)])
+    X = cavite[0]
+    front=(voisin(tableXY[X][0],tableXY[X][1],
+        nX,nY))
+    for i in range(x):
+        aleatoire = random.randint(0, len(front)-1)
+        cavite.append(front[aleatoire])
+        XY = cavite[-1]
+        front.remove(XY)
+        front.extend(voisin(tableXY[XY][0],tableXY[XY][1],
+        nX,nY))
         
-    return cavite,N
+    return front
+
+# print(cave(3,3,3,3))
+
+def hasard(x,y,nX,nY):
+    cave(x,y,nX,nY)
+    
 
 def coordonneMurV(nX,nY,largeurCase):
     coordonnees(nX,nY,largeurCase)
