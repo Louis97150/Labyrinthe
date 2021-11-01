@@ -1,3 +1,8 @@
+#Auteurs : Louis Duong et Romy Mahieu (20201858)
+#Date de création : 1 novembre 2021
+
+#Ce programme crée un labyrinthe rectangulaire aléatoire qui posséde une solution unique.
+
 X=None; Y=None
 
 N=[]; E=[]; S=[]; O=[]
@@ -10,16 +15,17 @@ front = []; celChoisi = []; cave=[]; choix=[]
 
 typeMur=''; numMur = 0; murChoisi = 0
 
-#La fonction contient vérifie si la valeur "x" se trouve dans la table. Elle retourne un booléen 
-#selon si la table contient ou non la valeur "x"
+
+#La fonction contient vérifie si la valeur "x" se trouve dans la table. 
+#Elle retourne un booléen selon si la table contient ou non la valeur "x"
 def contient(tab,x):
     for i in range(len(tab)):
         if tab[i]==x:
             return True
     return False
 
-#Cette fontion vérifie d'abord si la table contient déjà la valeur "x". Si ce n'est pas le cas, 
-#elle ajoute la valeur à la fin de la table
+#Cette fontion vérifie d'abord si la table contient déjà la valeur "x". 
+#Si ce n'est pas le cas, elle ajoute la valeur à la fin de la table
 def ajouter(tab,x):
     if contient(tab,x):
         return tab
@@ -27,8 +33,8 @@ def ajouter(tab,x):
         tab.append(x)
         return tab
 
-#Cette fonction vérifie d'abord si la table contient la valeur "x". Si c'est le cas, elle
-#retire "x" de la table.
+#Cette fonction vérifie d'abord si la table contient la valeur "x". 
+#Si c'est le cas, elle retire "x" de la table.
 def retirer(tab,x):
     if contient(tab,x):
         tab.remove(x)
@@ -36,9 +42,9 @@ def retirer(tab,x):
     else:
         return tab
 
-#Cette fonction créée la liste des coordonnées (x,y) des cellules de la grille qui vont servir
-#à créer le labyrinthe. Pour cela, elle prends deux nombres, soit nX (la longueur de la grille) 
-#et nY (la hauteur de la grille).
+#Cette fonction créée la liste des coordonnées (x,y) des cellules de la 
+#grille qui vont servir à créer le labyrinthe. Pour cela, elle prends deux
+#nombres, soit nX (la longueur de la grille) et nY (la hauteur de la grille).
 def nombre(nX,nY):
     global tableXY
     for i in range(nY):
@@ -46,9 +52,10 @@ def nombre(nX,nY):
             tableXY.append([j,i])
     return tableXY
 
-#La fonction murs prends deux paramétres en compte (nX et nY) et appelle la fonction nombre(x,y) 
-#afin de retourne une liste pour chaque type de mur d'une cellule. Il s'agit de la liste des murs
-#nord, est, sud et ouest pour chaque cellule.
+#La fonction murs prends deux paramétres en compte (nX et nY) et appelle 
+#la fonction nombre(x,y) afin de retourne une liste pour chaque type 
+#de mur d'une cellule. Il s'agit de la liste des murs nord, est, sud et 
+# ouest pour chaque cellule.
 def murs(nX,nY): 
     nombre(nX,nY)
     global N,S,E,O
@@ -59,28 +66,30 @@ def murs(nX,nY):
             O.append(tableXY[i][0]+tableXY[i][1]*(nX+1))
     return N,E,S,O
 
-#La fonction mursH prends aussi deux nombres en paramétre qui sont nX et nY. Elle retourne la liste 
-#des numéros des murs horizontaux intérieurs de la grille en faisant appelle à la fonction murs.
-def mursH(nX,nY):
+#La fonction mursH prends aucun paramétre. Elle retourne la 
+#liste des numéros des murs horizontaux intérieurs de la grille 
+#en faisant appelle à la fonction murs.
+def mursH():
     global murH, N, S
     for i in N:
         if (i in S) == True:
             murH.append(i)
     return murH
 
-#Cette fonction prends les mêmes paramétres que la fonction mursH et réalise la même chose, sauf que 
-#ce sont la liste des murs verticaux intérieurs qui est retournée.
-def mursV(nX,nY):
+#Cette fonction est similaire à mursH. Elle retourne la liste des murs 
+#verticaux intérieurs.
+def mursV():
     global murV, E, O
     for i in O:
         if (i in E) == True :
             murV.append(i)
     return murV
 
-#La fonction voisins prends quatre paramétres en compte : x et y qui sont les coordonnées de la cellule
-#dont on veut trouver les numéros des cellules voisines ainsi que nX et nY. Elle retourne une liste
-#composée des numéros des cellules voisines à la cellule (x,y).
-def voisins(x,y,nX,nY):
+#La fonction voisins prends trois paramétres en compte : x et y qui 
+#sont les coordonnées de la cellule dont on veut trouver les numéros des 
+#cellules voisines ainsi que nX. Elle retourne une liste composée des 
+#numéros des cellules voisines à la cellule (x,y).
+def voisins(x,y,nX):
     global tableXY
     voisins=[]
     if [x,y-1] in tableXY:
@@ -127,6 +136,15 @@ def verifierVoisin(x,y,nX,nY):
     return front
 
 
+#Cette fonction prends 4 nombres en paramètres : x, y, nX et nY.
+#Elle va vérifier si le noombre de voisins à la cellule de
+#coordonnée (x,y) donné en paramètre est suffisant (>0) pour
+#choisir aléatoirement un mur à enlever en appelant la fonction
+#décision mur. Si le nombre de voisin est 0, alors elle va
+#chercher la première cellule dans "cave" qui a un nombre de voisin
+#potentiel supérieure à 0, puis appeler decisionMur pour choisir
+#le mur à enlever.
+
 def choixMur(x,y,nX,nY) :
     global front, tableXY
     nbrVoisins = len(front)
@@ -141,11 +159,19 @@ def choixMur(x,y,nX,nY) :
                 decisionMur(celPrecedente[0],celPrecedente[1],nX,nY,nbrVoisins)
             else : continue
 
-def decisionMur(x,y,nX,nY,nbrVoisins):
+
+#Cette fonction prends 4 nombres en paramètre : la coordonnée (x,y) de 
+#la cellule dont on veut enlever un mur. Elle choisit une cellule 
+#voisine de cette dernière de manière aléatoire et va chercher le 
+#numéro du mur qui les sépare et son type (Nord,Sud,Est ou Ouest) ainsi
+#que la position de ce mur dans la liste murV ou murH selon qui contient
+#le mur en question. Elle retourne ces 3 valeurs.
+
+def decisionMur(x,y,nX,nbrVoisins):
     global typeMur, numMur, choix, front, tableXY, murV, murH, murChoisi
     choix = tableXY[front[math.floor(random()*nbrVoisins)]]
     print(choix)
-    if choix[0] == x and choix[1] == y-1:                       #on cherche le mur entre la cellule et sa voisine
+    if choix[0] == x and choix[1] == y-1:                       
             murChoisi = x+y*nX 
             typeMur = 'nord'
             numMur = position(murH,murChoisi)
@@ -161,8 +187,11 @@ def decisionMur(x,y,nX,nY,nbrVoisins):
             murChoisi = 1+x+y*(nX+1)
             typeMur = 'est'
             numMur = position(murV,murChoisi)
-    print(typeMur)
     return typeMur, numMur, choix, murChoisi
+
+
+#Cette fonction prends un nombre "n" en paramètre et retourne une 
+#liste qui commence à 0 jusqu'à "n" par bond de 1.
 
 def iota(n):
     liste = []
@@ -195,6 +224,10 @@ def coordonneMurV(nX,nY,largeurCase):
     return coordonneeMurV
 
 
+#La fonction coordonneMurH prends trois nombres en paramétre (nX, nY et largeurCase).
+#Elle retourne une liste de coordonnées (x,y) correspondant à la coordonnée du premier
+#pixel de chaque mur horixontal.
+
 def coordonneMurH(nX,nY,largeurCase):
     coordonneesPixels(nX,nY,largeurCase)
     global coordonneeMurH
@@ -204,37 +237,53 @@ def coordonneMurH(nX,nY,largeurCase):
     return coordonneeMurH
 
 
-#Cette fonction prends quatre nombres en paramétres (nX, nY, largeurCase et la 
-#position, soit le numéro du mur à enlever. Elle permet de créer un passage 
-#entre deux cellules voisines. C'est-à-dire qu'elle supprime le mur se trouvant 
-#entre deux cellules.
+#Cette fonction prends deux nombres en paramétres (largeurCase et la 
+#position, soit le numéro du mur à enlever). Elle permet de créer un passage 
+#entre deux cellules voisines l'une au dessus de l'autre. C'est-à-dire 
+#qu'elle supprime le mur horizontal se trouvant entre les deux cellules.
 
-def creerPassageH(nX,nY,largeurCase,position):
+def creerPassageH(largeurCase,position):
     global coordonneeMurH
     murEnlever = coordonneeMurH[position]
     for x in range (murEnlever[0],murEnlever[0]+largeurCase):
         setPixel(x,murEnlever[1],struct(r=15,g=15,b=15))
 
 
-def creerPassageV(nX,nY,largeurCase,position):
+#Cette fonction prends deux nombres en paramétres (largeurCase et la 
+#position, soit le numéro du mur à enlever). Elle permet de créer un passage 
+#entre deux cellules voisines l'une à côté de l'autre. C'est-à-dire 
+#qu'elle supprime le mur vertical se trouvant entre les deux cellules.
+
+def creerPassageV(largeurCase,position):
     global coordonneeMurV
     murEnlever = coordonneeMurV[position]
     for y in range (murEnlever[1],murEnlever[1]+largeurCase):
         setPixel(murEnlever[0],y,struct(r=15,g=15,b=15))
     
 
+#Cette fonction prends trois paramètre en compte (nX,nY et largeurCase).
+#Elle trace la grille rectangulaire de pixel noir, dont on va ajouter
+#les murs horizontaux et verticaux par la suite.
+
 def trace(nX,nY,largeurCase):
     setScreenMode(nX*largeurCase+(nX+1),nY*largeurCase+(nY+1))
 
 
+
 #Cette fonction dessine la grille de pixel rectangulaire initialement pleine
-#qui va permettre de générer le labyrinthe.
+#(avec tous les murs présent) qui va permettre de générer le labyrinthe.
+
 def rectangle(nX,nY,largeurCase):  
     color(nX,nY,largeurCase)
     coteV(nX,nY,largeurCase)
     coteH(nX,nY,largeurCase)
     entree(nX,largeurCase)
     sortie(nX,nY,largeurCase)
+
+
+
+#Cette fonction prends trois nombre en paramètre (nX,nY et largeurCase)
+#et colorie l'intérieur du rectangle en blanc.
 
 def color(nX,nY,largeurCase):
     trace(nX,nY,largeurCase)
@@ -243,13 +292,23 @@ def color(nX,nY,largeurCase):
     for i in range(1,x):
         for j in range(1,y):
             setPixel(i,j,struct(r=15,g=15,b=15))
-                        
+
+
+
+#Cette fonction prends trois nombres en paramètre (nX,nY et largeurCase)
+#et trace les murs verticaux à l'intérieur du rectangle initialment vide
+
 def coteV(nX,nY,largeurCase):
     x = nX*largeurCase+nX
     y = nY*largeurCase+nY
     for i in range(0,x,largeurCase+1):
         for j in range(0,y):
             setPixel(i,j,struct(r=0,g=0,b=0))
+
+
+
+#Cette fonction prends trois nombres en paramètre (nX,nY et largeurCase)
+#et trace les murs horizontaux à l'intérieur du rectangle initialment vide.
             
 def coteH(nX,nY,largeurCase):
     x = nX*largeurCase+nX
@@ -258,10 +317,18 @@ def coteH(nX,nY,largeurCase):
         for b in range(0,x):
             setPixel(b,k,struct(r=0,g=0,b=0))
 
-def entree(nX,largeurCase):
+
+#Cette fonction prends un nombre en paramètre (largeurCase)
+#et créée l'entrée du labyrinthe.
+
+def entree(largeurCase):
     for i in range(1,largeurCase+1):
         setPixel(i,0,struct(r=15,g=15,b=15))
-        
+
+
+#Cette fonction prends un nombre en paramètre (largeurCase)
+#et créée la sortie du labyrinthe. 
+   
 def sortie(nX,nY,largeurCase):
     y = nY*largeurCase+nY
     x1 = (nX-1)*largeurCase+nX
@@ -286,8 +353,15 @@ def celluleInitiale(nX,nY,largeurCase):
     ajouter(cave,celInitiale)
     return cave
 
+
+
+#Cette fonction prends trois paramètres (nX,nY et largeurCase) et 
+#trace un chemin de façon aléatoire grâce aux fonctions choixMur
+#et verifierVoisin, ainsi que creerPassageH/V. Elle enléve les
+#murs au fur et à mesure.
+
 def creationChemin(nX,nY,largeurCase):
-    global cave
+    global cave, murChoisi
     while len(cave)!=len(N):
         global choix
         celluleSuivante = choix
@@ -296,7 +370,13 @@ def creationChemin(nX,nY,largeurCase):
         choixMur(celluleSuivante[0],celluleSuivante[1],nX,nY)
         if typeMur == 'nord' or typeMur == 'sud' :
             creerPassageH(nX,nY,largeurCase,numMur)
-        else : creerPassageV(nX,nY,largeurCase,numMur)
+        else : 
+            creerPassageV(nX,nY,largeurCase,numMur)
+               
+
+#Cette fonction prends trois nombres en paramètre : nX, nY et 
+#largeurCase. Elle créée le labyrinthe en appelant les 
+#différentes fonctions créées précédement.
 
 def laby(nX, nY, largeurCase) :
     rectangle(nX,nY,largeurCase)
